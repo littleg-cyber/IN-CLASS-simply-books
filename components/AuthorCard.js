@@ -2,26 +2,36 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Link from 'next/link';
+import { deleteAuthorBooks } from '../api/mergedData';
 
-export default function AuthorCard({ authorObj }) {
-  // const deleteThisAuthor = () => {
-  //   if (window.confirm(`Delete ${authorObj.first_name}?`)) {
-  //     deleteSingleAuthor(authorObj.firebaseKey).then(() => onUpdate());
-  //   }
-  // };
+export default function AuthorCard({ authorObj, onUpdate }) {
+  const deleteThisAuthor = () => {
+    if (window.confirm(`Delete ${authorObj.first_name}?`)) {
+      deleteAuthorBooks(authorObj.firebaseKey).then(() => onUpdate());
+    }
+  };
+
   return (
-    <Card style={{ width: '18rem' }}>
-      <Card.Body>
-        <Card.Title>{authorObj.first_name} {authorObj.last_name}</Card.Title>
-        <Card.Text>
-          {authorObj.email}
-          <p className="card-text bold">${authorObj.favorite} </p>
-        </Card.Text>
-        <Button variant="success">??</Button>
-        <Button variant="info">??</Button>
-        <Button variant="danger">??</Button>
-      </Card.Body>
-    </Card>
+    <>
+      <Card style={{ width: '18rem' }}>
+        <Card.Body>
+          <Card.Title>{authorObj.first_name} {authorObj.last_name}</Card.Title>
+          <Card.Text>
+            {authorObj.email}
+            <p className="card-text bold">${authorObj.favorite} </p>
+          </Card.Text>
+          <Link href={`/author/edit/${authorObj.firebaseKey}`} passHref>
+            <Button variant="success" className="m-2">VIEW</Button>
+          </Link>
+          <Link href={`/author/edit/${authorObj.firebaseKey}`} passHref>
+            <Button variant="info">EDIT</Button>
+          </Link>
+          <Button variant="danger" onClick={deleteThisAuthor} className="m-2">DELETE</Button>
+        </Card.Body>
+      </Card>
+    </>
+
   );
 }
 
@@ -34,4 +44,5 @@ AuthorCard.propTypes = {
     uid: PropTypes.string,
     firebaseKey: PropTypes.string,
   }).isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
